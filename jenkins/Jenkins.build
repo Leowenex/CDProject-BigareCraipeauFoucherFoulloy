@@ -9,7 +9,7 @@ pipeline {
   stages {
     stage('Cloning Git') {
       steps {
-        git branch: 'main', credentialsId: 'Git', url: 'https://github.com/ST2DCE/2024-2025.git'
+        git branch: 'main', credentialsId: 'Git', url: 'https://github.com/Leowenex/CDProject-BigareCraipeauFoucherFoulloy'
       }
     }
     stage('Building api image') {
