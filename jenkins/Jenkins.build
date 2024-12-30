@@ -16,7 +16,7 @@ pipeline {
       steps {
         script {
           dir('webapi') {
-            apiImage = docker.build("leowenex/api-BCFF:2025")
+            apiImage = docker.build("leowenex/api-bcff:2025")
 
           }
         }

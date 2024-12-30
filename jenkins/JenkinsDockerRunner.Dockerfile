@@ -14,7 +14,8 @@ RUN apt-get update && \
     ca-certificates \
     software-properties-common \
     gnupg2 \
-    lsb-release
+    lsb-release \
+    openjdk-17-jdk
 
 # Install Docker
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
@@ -42,5 +43,12 @@ RUN mkdir /var/run/sshd && \
 # Expose SSH port
 EXPOSE 22
 
-# Start SSH server
-CMD ["/usr/sbin/sshd", "-D"]
+# Create /root/jenkins directory
+RUN mkdir /root/jenkins
+
+# Add startup script
+COPY RunnerStartup.sh /usr/local/bin/startup.sh
+RUN chmod +x /usr/local/bin/startup.sh
+
+# Start services
+CMD ["/usr/local/bin/startup.sh"]
