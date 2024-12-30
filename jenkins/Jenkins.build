@@ -1,0 +1,54 @@
+
+def apiImage = ''
+pipeline {
+
+  agent {
+    label 'jenkins-slave'
+  }
+
+  stages {
+    stage('Cloning Git') {
+      steps {
+        git branch: 'main', credentialsId: 'Git', url: 'https://github.com/ST2DCE/2024-2025.git'
+      }
+    }
+    stage('Building api image') {
+      steps {
+        script {
+          dir('webapi') {
+            apiImage = docker.build("leowenex/api-BCFF:2025")
+
+          }
+        }
+      }
+    }
+    stage('Publish api Image') {
+      steps {
+        script {
+          withDockerRegistry(credentialsId: 'DockerHubLeowenex') {
+            apiImage.push()
+          }
+
+        }
+      }
+    }
+
+    stage('Deploy api container to Dev environment') {
+      steps {
+        echo "Run backend conatiner "
+      }
+    }
+
+    stage('Test api running on Dev environment') {
+      steps {
+        echo "Run backend conatiner "
+      }
+    }
+
+    stage('Deploy api container to Prod environment') {
+      steps {
+        echo "Run backend conatiner "
+      }
+    }
+  }
+}
