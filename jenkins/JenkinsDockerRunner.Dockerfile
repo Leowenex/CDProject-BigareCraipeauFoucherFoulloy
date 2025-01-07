@@ -33,6 +33,11 @@ RUN curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/mi
     chmod +x minikube && \
     mv minikube /usr/local/bin/
 
+# Install Kubectl
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/
+
 # Configure SSH server
 RUN mkdir /var/run/sshd && \
     echo 'root:admin' | chpasswd && \
