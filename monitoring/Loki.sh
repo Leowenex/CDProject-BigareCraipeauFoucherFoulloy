@@ -3,8 +3,9 @@
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 kubectl create namespace monitoring
-helm install loki-cdp grafana/loki --namespace monitoring  -f ./loki-config.yaml
-kubectl port-forward --namespace monitoring svc/loki-cdp-gateway 3100:80
+helm upgrade --install --values loki-config.yaml loki grafana/loki-stack -n monitoring
+kubectl get secret --namespace monitoring grafana-cdp -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+minikube service loki-grafana --url -n monitoring
 
 # to test :
 
