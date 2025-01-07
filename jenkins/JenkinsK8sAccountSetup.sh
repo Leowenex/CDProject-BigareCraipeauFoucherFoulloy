@@ -1,3 +1,11 @@
+# Creating namespaces
+kubectl create namespace dev
+kubectl create namespace prod
+
+# Get the port for Minikube (for Jenkins)
+kubectl config view
+
+# Creating a Service Account for Jenkins with cluster-admin role
 kubectl create sa jenkins
 kubectl create clusterrolebinding jenkins --clusterrole=cluster-admin --serviceaccount=default:jenkins
 kubectl create token jenkins

@@ -33,14 +33,6 @@ pipeline {
       }
     }
 
-    stage('Create dev namespace') {
-      steps {
-        withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'default', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:51941') {
-          sh "kubectl create namespace dev"
-        }
-      }
-    }
-
     stage('Deploy api container to Dev environment') {
       steps {
         withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'dev', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:51941') {
@@ -53,14 +45,15 @@ pipeline {
     // Curl the service at /whoami to see if it's running and check the response is 200 and contains "BCFF"
     stage('Test api running on Dev environment') {
       steps {
-        echo "Testing container"
-      }
-    }
-
-    stage('Create prod namespace') {
-      steps {
-        withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'default', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:51941') {
-          sh "kubectl create namespace prod"
+        script {
+          def response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://dev.bcff.io/whoami", returnStdout: true).trim()
+          if (response != '200') {
+            error "Failed to curl the service"
+          }
+          response = sh(script: "curl -s http://dev.bcff.io/whoami", returnStdout: true).trim()
+          if (!response.contains("BCFF")) {
+            error "Response does not contain BCFF"
+          }
         }
       }
     }
@@ -68,8 +61,8 @@ pipeline {
     stage('Deploy api container to Prod environment') {
       steps {
         withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'prod', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:51941') {
-          sh "kubectl create deployment api-bcff --image=leowenex/api-bcff:2025 -n prod"
-          sh "kubectl expose deployment api-bcff --type=NodePort --port=8080 -n prod"
+          sh "kubectl create deployment api-bcff --image=leowenex/api-bcff:2025"
+          sh "kubectl expose deployment api-bcff --type=NodePort --port=8080"
         }
       }
     }
