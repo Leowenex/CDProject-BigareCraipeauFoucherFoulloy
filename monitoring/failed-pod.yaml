@@ -1,10 +1,11 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: error-pod
+  name: failed-pod
   namespace: monitoring
 spec:
+  restartPolicy: Never
   containers:
-    - name: error-container
+    - name: failed-container
       image: busybox
       command: ["sh", "-c", "exit 1"]
