@@ -18,5 +18,6 @@ spec:
       containers:
         - name: api-bcff
           image: leowenex/api-bcff:2025
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
