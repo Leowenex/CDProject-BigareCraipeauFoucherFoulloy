@@ -55,7 +55,7 @@ func request1() {
 	http.HandleFunc("/", homePage)
 	http.HandleFunc("/aboutme", aboutMe)
 	http.HandleFunc("/whoami", whoAmI)
-	http.HandleFunc("/error", whoAmI)
+	http.HandleFunc("/error", error)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
