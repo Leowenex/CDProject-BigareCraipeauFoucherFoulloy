@@ -15,11 +15,14 @@ docker run -d -p 8090:8080 -p 50000:50000 --name jenkins --restart unless-stoppe
 #   - Full Name: admin
 #   - Email: admin@example.com
 
-# Set credentials for Docker Hub and GitHub
+# Set credentials for DockerHub ,GitHub, Kubernetes and for the Runner (root:admin)
 # - Jenkins > Manage Jenkins > Credentials > System > Global credentials (unrestricted) > Add Credentials
 
-# Install Docker and Git plugins
+# Install Docker, Kubernetes, Kubernetes Credentials, and Kubernetes CLI plugins
 # - Jenkins > Manage Jenkins > Plugins > Available Plugins
+
+# Ajouter le runner
+# - ?
 
 # Créer un projet Pipeline
 # - Jenkins > New Item > Pipeline

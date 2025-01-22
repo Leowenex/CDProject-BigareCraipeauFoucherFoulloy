@@ -17,7 +17,6 @@ pipeline {
         script {
           dir('webapi') {
             apiImage = docker.build("leowenex/api-bcff:2025")
-
           }
         }
       }
@@ -35,9 +34,11 @@ pipeline {
 
     stage('Deploy api container to Dev environment') {
       steps {
-        withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'dev', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:51941') {
-          sh "kubectl create deployment api-bcff --image=leowenex/api-bcff:2025"
-          sh "kubectl expose deployment api-bcff --type=NodePort --port=8080"
+        dir('webapi-k8s') {
+          withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'dev', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:51941') {
+            sh "helm upgrade --install api-bcff -n dev helm_dev"
+            sh "kubectl port-forward service/api-bcff 9988:8080 -n dev --address 0.0.0.0"
+          }
         }
       }
     }
@@ -46,7 +47,7 @@ pipeline {
     stage('Test api running on Dev environment') {
       steps {
         script {
-          def response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://dev.bcff.io/whoami", returnStdout: true).trim()
+          def response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://192.168.27.66:9988/whoami", returnStdout: true).trim()
           if (response != '200') {
             error "Failed to curl the service"
           }
@@ -60,9 +61,11 @@ pipeline {
 
     stage('Deploy api container to Prod environment') {
       steps {
-        withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'prod', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:51941') {
-          sh "kubectl create deployment api-bcff --image=leowenex/api-bcff:2025"
-          sh "kubectl expose deployment api-bcff --type=NodePort --port=8080"
+        dir('webapi-k8s') {
+          withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'dev', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:51941') {
+            sh "helm upgrade --install api-bcff -n prod helm_prod"
+            sh "kubectl port-forward service/api-bcff 9977:8080 -n prod --address 0.0.0.0"
+          }
         }
       }
     }

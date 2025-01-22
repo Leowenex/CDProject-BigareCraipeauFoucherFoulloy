@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-bcff
+  namespace: dev
+  labels:
+    app: api-bcff
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-bcff
+  template:
+    metadata:
+      labels:
+        app: api-bcff
+    spec:
+      containers:
+        - name: api-bcff
+          image: leowenex/api-bcff:2025
+          ports:
+            - containerPort: 8080
