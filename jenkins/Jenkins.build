@@ -35,9 +35,8 @@ pipeline {
     stage('Deploy api container to Dev environment') {
       steps {
         dir('webapi-k8s') {
-          withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'dev', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:51941') {
+          withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'dev', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:55068') {
             sh "helm upgrade --install api-bcff -n dev helm_dev"
-            sh "kubectl port-forward service/api-bcff 9988:8080 -n dev --address 0.0.0.0"
           }
         }
       }
@@ -51,7 +50,7 @@ pipeline {
           if (response != '200') {
             error "Failed to curl the service"
           }
-          response = sh(script: "curl -s http://dev.bcff.io/whoami", returnStdout: true).trim()
+          response = sh(script: "curl -s http://192.168.27.66:9988/whoami", returnStdout: true).trim()
           if (!response.contains("BCFF")) {
             error "Response does not contain BCFF"
           }
@@ -62,9 +61,8 @@ pipeline {
     stage('Deploy api container to Prod environment') {
       steps {
         dir('webapi-k8s') {
-          withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'dev', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:51941') {
+          withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'dev', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:55068') {
             sh "helm upgrade --install api-bcff -n prod helm_prod"
-            sh "kubectl port-forward service/api-bcff 9977:8080 -n prod --address 0.0.0.0"
           }
         }
       }
