@@ -15,7 +15,9 @@ RUN apt-get update && \
     software-properties-common \
     gnupg2 \
     lsb-release \
-    openjdk-17-jdk
+    openjdk-17-jdk \
+    curl \
+    iputils-ping
 
 # Install Docker
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
@@ -24,14 +26,17 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     apt-get update && \
     apt-get install -y docker-ce docker-ce-cli containerd.io
 
-# Install Docker Compose
-RUN curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
-    chmod +x /usr/local/bin/docker-compose
+# Install Kubectl
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/
 
-# Install Minikube
-RUN curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && \
-    chmod +x minikube && \
-    mv minikube /usr/local/bin/
+# Install Helm
+RUN curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null && \
+    sudo apt-get install apt-transport-https --yes && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list && \
+    sudo apt-get update && \
+    sudo apt-get install helm
 
 # Configure SSH server
 RUN mkdir /var/run/sshd && \
