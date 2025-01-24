@@ -61,7 +61,7 @@ pipeline {
     stage('Deploy api container to Prod environment') {
       steps {
         dir('webapi-k8s') {
-          withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'dev', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:55068') {
+          withKubeConfig(caCertificate: '', clusterName: 'minikube', contextName: 'minikube', credentialsId: 'minikube-jenkins-secret', namespace: 'prod', restrictKubeConfigAccess: false, serverUrl: 'https://host.docker.internal:55068') {
             sh "helm upgrade --install api-bcff -n prod helm_prod"
           }
         }
