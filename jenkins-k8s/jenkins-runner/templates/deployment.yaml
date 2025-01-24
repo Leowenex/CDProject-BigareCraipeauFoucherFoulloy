@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-runner
+  namespace: jenkins-runner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins-runner
+  template:
+    metadata:
+      labels:
+        app: jenkins-runner
+    spec:
+      containers:
+        - name: jenkins-runner
+          image: leowenex/cdprojectrunner:latest
+          ports:
+            - containerPort: 22
+          volumeMounts:
+            - name: runner-data
+              mountPath: /root/jenkins
+          securityContext:
+            privileged: true
+      volumes:
+        - name: runner-data
+          persistentVolumeClaim:
+            claimName: runner-pvc
