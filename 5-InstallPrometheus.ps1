@@ -41,7 +41,7 @@ serverFiles:
               severity: warning
             annotations:
               summary: "Pod en échec depuis plus de 10 minutes"
-              description: "Le pod {{ $labels.pod }} dans le namespace {{ $labels.namespace }} est en échec depuis plus de 10 minutes."
+              description: "Le pod {{ `$labels.pod }} dans le namespace {{ `$labels.namespace }} est en échec depuis plus de 10 minutes."
 
           - alert: HighCPUUsage_Foucher_Craipeau_Fouloy_Bigare
             expr: rate(container_cpu_usage_seconds_total{pod!=""}[2m]) > 0.9
@@ -50,7 +50,7 @@ serverFiles:
               severity: critical
             annotations:
               summary: "Haute utilisation du CPU détectée"
-              description: "Le taux d'utilisation du CPU pour le pod {{ $labels.pod }} dans le namespace {{ $labels.namespace }} dépasse 90% depuis plus de 5 minutes."
+              description: "Le taux d'utilisation du CPU pour le pod {{ `$labels.pod }} dans le namespace {{ `$labels.namespace }} dépasse 90% depuis plus de 5 minutes."
 
   # Référence du fichier de règles dans Prometheus
   prometheus.yml:
