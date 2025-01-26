@@ -16,6 +16,9 @@
   - Affiche l'URL d'accès à Prometheus dans Minikube.
 #>
 
+# 0) Cd dans le répertoire monitoring
+cd "$PSScriptRoot\monitoring"
+
 # 1) Ajouter le dépôt Helm et mettre à jour
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update

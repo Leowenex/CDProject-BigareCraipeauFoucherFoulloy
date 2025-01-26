@@ -1,11 +1,10 @@
-# Requirements: Docker Desktop for Windows
+# Prérequis: Docker installé
 
 docker run -d -p 8090:8080 -p 50000:50000 --name jenkins --restart unless-stopped jenkins/jenkins:lts-jdk17
-# (Using port 8090 to avoid conflicts with other services)
 
-# Open a browser and navigate to http://localhost:8080
-# Follow the instructions to complete the Jenkins setup
-# The initial admin password can be found in the Jenkins container logs
+# Ouvrir un navigateur et naviguer vers http://localhost:8090
+# Suivre les instructions pour compléter la configuration de Jenkins
+# Le mot de passe admin initial peut être trouvé dans les logs du container Jenkins
 
 # Recommended Settings:
 # - Install suggested plugins
